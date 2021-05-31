@@ -36,8 +36,8 @@ class Script:
             transforms.Normalize((0.1307,), (0.3081,))
         ])
         self.train_loader, self.test_loader = self.get_data(filepath)
-        self.model = MnistModel().cuda()
-        self.criterion = torch.nn.CrossEntropyLoss().cuda()
+        self.model = MnistModel()
+        self.criterion = torch.nn.CrossEntropyLoss()
         self.optimizer = torch.optim.SGD(self.model.parameters(), lr=0.01, momentum=0.5)
         self.accuracy = []
 
@@ -53,10 +53,7 @@ class Script:
         running_loss = 0.0
         for batch_index, data in enumerate(self.train_loader, 0):
             inputs, target = data
-            inputs = inputs.cuda()
-            target = target.cuda()
             self.optimizer.zero_grad()
-
             outputs = self.model(inputs)
             loss = self.criterion(outputs, target)
             loss.backward()
@@ -73,8 +70,6 @@ class Script:
         with torch.no_grad():
             for data in self.test_loader:
                 images, labels = data
-                images = images.cuda()
-                labels = labels.cuda()
                 outputs = self.model(images)
                 _, predicted = torch.max(outputs.data, dim=1)
                 total += labels.size(0)
